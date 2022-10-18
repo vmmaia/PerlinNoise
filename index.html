@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script defer="defer" type="module" src="src/main.js"></script>
+        <style>
+            *{
+                padding: 0;
+                margin: 0;
+                overflow: hidden;
+            }
+
+            #info{
+                position: absolute;
+                bottom: 0px;
+                left: 0;
+                background-color: white;
+                padding: 5px;
+                opacity: 50%;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="canvas"></canvas>
+        <div id="info">
+            zx => perlin frequency | cv => no. of gradient vectors | space => debug info
+        </div>
+    </body>
+</html>
