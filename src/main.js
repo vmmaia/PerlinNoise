@@ -69,12 +69,17 @@ const addListeners = () => {
     }, false);
 }
 
-const shiftBufferByOffset = (xOffset, yOffset) => {
-    if(xOffset > IMG_WIDTH || yOffset > IMG_HEIGHT) return;
+/**
+ * Shift image buffer to left by a given amount and paints the old pixels white
+ * 
+ * @param {*} xOffset Horizontal offset
+ */
+const shiftBufferByOffset = (xOffset) => {
+    if(xOffset > IMG_WIDTH) return;
 
     for(let y=0; y<IMG_HEIGHT; y++){
         for(let x=0; x<IMG_WIDTH; x++){
-            if(x >= IMG_WIDTH - xOffset || y >= IMG_HEIGHT - yOffset){
+            if(x >= IMG_WIDTH - xOffset){
                 buffer[y][x] = 255;
                 continue;
             }
@@ -85,6 +90,13 @@ const shiftBufferByOffset = (xOffset, yOffset) => {
 
 }
 
+/**
+ * Inserts an image inside the buffer from right to left
+ * 
+ * @param {*} image Pixel data to paste
+ * @param {*} width Image width
+ * @param {*} height Image height
+ */
 const pasteImageInBuffer = (image, width, height) => {
     let xIndex = 0;
     let yIndex = 0;
@@ -101,6 +113,13 @@ const pasteImageInBuffer = (image, width, height) => {
     }
 } 
 
+/**
+ * Continuously generates perlin noise values for an image of arbitrary size
+ * 
+ * @param {*} width Image width
+ * @param {*} height Image height
+ * @returns Two dimensional pixel values array
+ */
 const generatePerlinImage = (width, height) => {
     const perlinArray = [];
 
@@ -121,6 +140,9 @@ const generatePerlinImage = (width, height) => {
     return perlinArray;
 }
 
+/**
+ * Paints buffer image on canvas
+ */
 const drawPerlinImage = () => {
     for(let y=0; y<IMG_HEIGHT; y++){
         for(let x=0; x<IMG_WIDTH; x++){
@@ -157,9 +179,7 @@ const setup = () => {
     canvas.clearCanvas();
 
     let perlinArray = generatePerlinImage(IMG_WIDTH, IMG_HEIGHT);
-
     pasteImageInBuffer(perlinArray, IMG_WIDTH, IMG_HEIGHT);
-
     drawPerlinImage();
     
     addListeners();
@@ -180,7 +200,7 @@ const mainLoop = () => {
 
         P_GEN_TIME = pt2 - pt1;
 
-        shiftBufferByOffset(1, 0);
+        shiftBufferByOffset(1);
         pasteImageInBuffer(perlinArray, 1, IMG_HEIGHT);
 
         canvas.clearCanvas();

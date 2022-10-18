@@ -2,10 +2,21 @@
  * Two dimensional vector class
  */
 export class Vector2D {
+    /**
+     * Create a vector from a set of coordinates representing the offset from origin
+     * 
+     * @param {*} x X component of offset
+     * @param {*} y Y component of offset
+     */
     constructor(x, y){
         this.setCoordinates(x, y);
     }
 
+    /**
+     * Returns vector information
+     * 
+     * @returns Object with vector information {x, y, direction, magnitude}
+     */
     getVector = () => {
         return {
             x: this.x,
@@ -15,6 +26,12 @@ export class Vector2D {
         }
     }
 
+    /**
+     * Change vector direction
+     * 
+     * @param {*} direction Direction in radians
+     * @returns Updated vector information
+     */
     setDirection = (direction) => {
         this.direction = sanatizeRadians(direction);
         this.x = Math.cos(this.direction) * this.magnitude;
@@ -23,6 +40,13 @@ export class Vector2D {
         return this.getVector();
     }
 
+    /**
+     * Changes offset coordinates from origin
+     * 
+     * @param {*} x X component of offset
+     * @param {*} y Y component of offset
+     * @returns Updated vector information
+     */
     setCoordinates = (x, y) => {
         this.x = x;
         this.y = y;
@@ -36,6 +60,12 @@ export class Vector2D {
         return this.getVector();
     }
 
+    /**
+     * Sets the vector magnitude to a give value
+     * 
+     * @param {*} magnitude Vector magnitude
+     * @returns Updated vector information
+     */
     setMagnitude = (magnitude) => {
         this.magnitude = magnitude;
         this.x = Math.cos(this.direction) * this.magnitude;
@@ -44,6 +74,11 @@ export class Vector2D {
         return this.getVector();
     }
 
+    /**
+     * Sets vector magnitude to 1
+     * 
+     * @returns Updated vector information
+     */
     normalize = () => {
         return this.setMagnitude(1);
     }

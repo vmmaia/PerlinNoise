@@ -1,9 +1,15 @@
 import {Vector2D} from '../util/util.js';
 
 /**
+ * Implementation of 2D Perlin noise
+ * 
+ * https://en.wikipedia.org/wiki/Perlin_noise
  * http://adrianb.io/2014/08/09/perlinnoise.html
  */
 class Perlin2D{
+    /**
+     * Permutation table to pseudo-randomize gradient vector pick
+     */
     permutations = [
         151,160,137, 91, 90, 15,131, 13,201, 95, 96, 53,194,233,  7,225,140, 36,103, 30, 69,142,  8, 99, 37,240, 21, 10, 23,190,  6,148,
         247,120,234, 75,  0, 26,197, 62, 94,252,219,203,117, 35, 11, 32, 57,177, 33, 88,237,149, 56, 87,174, 20,125,136,171,168, 68,175,
@@ -15,6 +21,9 @@ class Perlin2D{
         184, 84,204,176,115,121, 50, 45,127,  4,150,254,138,236,205, 93,222,114, 67, 29, 24, 72,243,141,128,195, 78, 66,215, 61,156,180
     ];
 
+    /**
+     * Gradient vectors used to populate vector grid
+     */
     gradient = [
         new Vector2D(1 ,  1),
         new Vector2D(-1,  1),
@@ -22,6 +31,12 @@ class Perlin2D{
         new Vector2D(-1, -1)
     ]
 
+    /**
+     * Constructor for Perlin2D class
+     * If a number is passed, it creates a vector gradient of that size with randomly generated vectors
+     * 
+     * @param {*} randomGradientVectors Number of vectors to create gradient
+     */
     constructor(randomGradientVectors){
         if(randomGradientVectors !== undefined){
             const vectors = [];
@@ -34,6 +49,13 @@ class Perlin2D{
         }
     }
 
+    /**
+     * Find coordinates of cell in vector grid where a point falls in
+     * 
+     * @param {*} x X component of point
+     * @param {*} y Y component of point
+     * @returns Object with coordinates of cell {x, y}
+     */
     getCellCoordinatesInGrid = (x, y) => {
         return {
             x: Math.floor(x) % 255,
@@ -41,6 +63,12 @@ class Perlin2D{
         }
     }
 
+    /**
+     * Pick values from permutations table according to cell coordinates
+     * 
+     * @param {*} Object() {x, y} coordinates of cell in vector grid
+     * @returns Array of four gradient values corresponding to each vector of the cell
+     */
     getGradientHashes = ({x, y}) => {
         return [
             this.permutations[(this.permutations[x]               + y)                % 255],
@@ -50,6 +78,13 @@ class Perlin2D{
         ]
     }
 
+    /**
+     * Find position inside vector grid cell a point falls into
+     * 
+     * @param {*} x X component of point
+     * @param {*} y Y component of point
+     * @returns Coordinates inside cell where the point falls in relative to the origin {x, y}
+     */
     getPositionInsideGrid = (x, y) => {
         return {
             x: x - Math.floor(x),
@@ -57,6 +92,12 @@ class Perlin2D{
         }
     }
 
+    /**
+     * Pick vectors from gradient based on gradient hash values
+     * 
+     * @param {*} gradientHashes Values selected from permutations table
+     * @returns Vectors corresponding to each corner of the cell
+     */
     getGradientVectors = (gradientHashes) => {
         return [
             this.gradient[gradientHashes[0] % (this.gradient.length - 1)],
@@ -66,6 +107,13 @@ class Perlin2D{
         ]
     }
 
+    /**
+     * Performs the dot product between each vector and point inside vector grid cell
+     * 
+     * @param {*} gradientVectors Vectors corresponding to each corner of the vector grid cell
+     * @param {*} Object {x, y} coordinates of point inside vector grid cell
+     * @returns Dot products between each vector and point inside cell
+     */
     getDotProducts = (gradientVectors, {x, y}) => {
         return [
             (gradientVectors[0].x * x       )  + (gradientVectors[0].y * y          ),
@@ -75,6 +123,12 @@ class Perlin2D{
         ]
     }
 
+    /**
+     * Applies a mathematical function to soothe perlin values and eliminate visible boundaries
+     * 
+     * @param {*} Object {x, y} coordinates of point inside vector gride cell
+     * @returns Processed {x, y} cordinates
+     */
     applyFade = ({x, y}) => {
         return {
             x: 6*x**5 - 15*x**4 + 10*x**3,
@@ -82,6 +136,13 @@ class Perlin2D{
         }
     }
 
+    /**
+     * Linear interpolation between four values
+     * 
+     * @param {*} gradientVectors Dot products of each cell vector with point inside cell
+     * @param {*} Object {x, y} Point inside cell with fade function applied
+     * @returns Perlin noise value
+     */
     bilinearInterpolation = (gradientVectors, {x, y}) => {
         return this.linearInterpolation(
             this.linearInterpolation(gradientVectors[0], gradientVectors[1], x),
@@ -90,14 +151,39 @@ class Perlin2D{
         )
     }
 
+    /**
+     * Linear interpolation between two values
+     * 
+     * @param {*} v1 Value 1
+     * @param {*} v2 Value 2
+     * @param {*} n Value to interpolate
+     * @returns Interpolated value
+     */
     linearInterpolation = (v1, v2, n) => {
         return v1 + n * (v2 - v1);
     }
 
+    /**
+     * Limits a value between a set of limits
+     * 
+     * @param {*} n Value to limit
+     * @param {*} start1 Limit 1 lower bound
+     * @param {*} stop1 Limit 1 upper bound
+     * @param {*} start2 Limit 2 lower bound
+     * @param {*} stop2 Limit 2 upper bound
+     * @returns Bounded value
+     */
     boundResult = (n, start1, stop1, start2, stop2) => {
         return (n - start1) / (stop1 - start1) * (stop2 - start2) + start2;
     }
 
+    /**
+     * Returns a Perlin noise value for the a set of coordinates
+     * 
+     * @param {*} x X component of coordinate
+     * @param {*} y Y component of coordinate
+     * @returns Perlin noise value in interval [0, 1]
+     */
     getNoiseAtPoint = (x, y) => {
         const cellCoordinates       = this.getCellCoordinatesInGrid(x, y); 
         const gradientHashes        = this.getGradientHashes(cellCoordinates); 

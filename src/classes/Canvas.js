@@ -47,13 +47,13 @@ let Canvas = (function () {
         }
 
         /**
+         * Draws a rectangle in the canvas
          * 
-         * 
-         * @param {*} x 
-         * @param {*} y 
-         * @param {*} width 
-         * @param {*} height 
-         * @param {*} color 
+         * @param {*} x Origin point X component
+         * @param {*} y Origin point Y component
+         * @param {*} width Rectangle width
+         * @param {*} height Rectangle height
+         * @param {*} color Rectangle fill color
          */
         drawRectangle = (x, y, width, height, color) => {
             this.canvasContext.fillStyle = color;
@@ -62,10 +62,11 @@ let Canvas = (function () {
         }
 
         /**
+         * Draws an image in the canvas
          * 
-         * @param {*} image 
-         * @param {*} x 
-         * @param {*} y 
+         * @param {*} image Canvas conetext image data to draw
+         * @param {*} x Top left corner X component
+         * @param {*} y Top left corner Y component
          */
         drawImage = (image, x, y) => {
             this.canvasContext.putImageData(image, x, y);
