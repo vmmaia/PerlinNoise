@@ -2,7 +2,7 @@
 
 ![screen](screen.png)
 
-Proof of concept of a 2D perlin noise generator implemented in Javascript.
+Proof of concept of 1D and 2D perlin noise generatos implemented in Javascript.
 
 ## Keyboard shortcuts
 | Key | description |
