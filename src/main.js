@@ -3,7 +3,6 @@ import Perlin2D from './classes/Perlin2D.js';
 import Perlin1D from './classes/Perlin1D.js';
 
 let DEBUG = false;
-const REFRESH_RATE = 60;
 
 const canvas = new Canvas;
 
@@ -236,30 +235,30 @@ const setup = () => {
  * Main logic loop
  */
 const mainLoop = () => {
-    setInterval(() => {
-        let thisLoop = new Date();
-        FPS = Math.round(1000 / (thisLoop - lastLoop));
-        lastLoop = thisLoop;
+    let thisLoop = new Date();
+    FPS = Math.round(1000 / (thisLoop - lastLoop));
+    lastLoop = thisLoop;
 
-        const pt1 = new Date();
-        const perlin2DArray = generatePerlinImage(1, IMG_HEIGHT);
-        const perlin1DArray = generatePerlinValue(1);
-        const pt2 = new Date();
+    const pt1 = new Date();
+    const perlin2DArray = generatePerlinImage(1, IMG_HEIGHT);
+    const perlin1DArray = generatePerlinValue(1);
+    const pt2 = new Date();
 
-        P_GEN_TIME = pt2 - pt1;
+    P_GEN_TIME = pt2 - pt1;
 
-        shiftBufferByOffset(buffer1, 1);
-        shiftBufferByOffset(buffer2, 1);
+    shiftBufferByOffset(buffer1, 1);
+    shiftBufferByOffset(buffer2, 1);
 
-        pasteImageInBuffer(buffer1, perlin2DArray, 1, IMG_HEIGHT);
-        pasteImageInBuffer(buffer2, perlin1DArray, 1, IMG_HEIGHT);
+    pasteImageInBuffer(buffer1, perlin2DArray, 1, IMG_HEIGHT);
+    pasteImageInBuffer(buffer2, perlin1DArray, 1, IMG_HEIGHT);
 
-        canvas.clearCanvas();
-        drawPerlinImage(image1, buffer1, (canvas.width / 2) - (IMG_WIDTH / 2), canvas.height / 9);
-        drawPerlinImage(image2, buffer2, (canvas.width / 2) - (IMG_WIDTH / 2), canvas.height / 9 * 2 + IMG_HEIGHT);
+    canvas.clearCanvas();
+    drawPerlinImage(image1, buffer1, (canvas.width / 2) - (IMG_WIDTH / 2), canvas.height / 9);
+    drawPerlinImage(image2, buffer2, (canvas.width / 2) - (IMG_WIDTH / 2), canvas.height / 9 * 2 + IMG_HEIGHT);
 
-        if(DEBUG) drawDebug();
-    }, 1000 / REFRESH_RATE);
+    if(DEBUG) drawDebug();
+
+    window.requestAnimationFrame(mainLoop);
 }
 
 setup();
