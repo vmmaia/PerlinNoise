@@ -4,6 +4,9 @@
 
 Proof of concept of 1D and 2D perlin noise generatos implemented in Javascript.
 
+## Live preview
+https://vmmaia.github.io/PerlinNoise/
+
 ## Keyboard shortcuts
 | Key | description |
 | --- | ----------- |
